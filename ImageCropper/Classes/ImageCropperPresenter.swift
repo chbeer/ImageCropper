@@ -35,6 +35,7 @@ protocol ImageCropperPresenter {
   func userInteraction(_ takesPlace: Bool)
   func didDrag(to location: CGPoint)
   func didPinchStarted()
+  func didPinchEnded()
   func didScale(with scale: CGFloat)
   
   func centerImage()
@@ -49,6 +50,8 @@ protocol ImageCropperRouter {
 }
 
 protocol ImageCropperModel {
+  var pinching: Bool { get }
+    
   var image: UIImage { get }
   var parentFrame: CGRect { set get }
   var imageInitialFrame: CGRect { get }
@@ -70,7 +73,7 @@ protocol ImageCropperModel {
   var backTintColor: UIColor? { get }
   
   func draggingFrame(for point: CGPoint) -> CGRect
-  func setStartedPinch()
+  func setIsPinching(_ pinching: Bool)
   func scalingFrame(for scale: CGFloat) -> CGRect
   func transformatingFinished()
   func centerFrame() -> CGRect
@@ -86,9 +89,7 @@ class ImageCropperPresenterImplementation {
   fileprivate let router: ImageCropperRouter
   
   fileprivate var model: ImageCropperModel
-    
-    var initial: Bool = false
-  
+      
   //MARK: -
   
   init(for view: ImageCropperView, with router: ImageCropperRouter, and model: ImageCropperModel) {
@@ -96,7 +97,6 @@ class ImageCropperPresenterImplementation {
     self.router = router
     self.model = model
   }
-
 }
 
 //MARK: - ImageCropperPresenter
@@ -111,11 +111,11 @@ extension ImageCropperPresenterImplementation: ImageCropperPresenter {
     view?.clearMask()
     view?.clearBorderAndGrid()
     
-    if !initial {
+    if !model.pinching {
         model.parentFrame = frame
         view?.setImageFrame(model.imageInitialFrame)
-        initial = true
     }
+    
     view?.drawMask(by: model.mask, with: model.fillColor)
     view?.drawBorber(by: model.border, with: model.borderColor)
     view?.drawGrid(with: model.grid, with: model.gridColor)
@@ -135,10 +135,16 @@ extension ImageCropperPresenterImplementation: ImageCropperPresenter {
   }
   
   func didPinchStarted() {
-    model.setStartedPinch()
+    model.setIsPinching(true)
   }
   
+  func didPinchEnded() {
+    model.setIsPinching(false)
+  }
+    
+  
   func didScale(with scale: CGFloat) {
+    print("scale: \(scale)")
     view?.setImageFrame(model.scalingFrame(for: scale))
   }
   

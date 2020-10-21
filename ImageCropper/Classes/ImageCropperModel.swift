@@ -7,11 +7,13 @@ import UIKit
 
 class ImageCropperModelImplementation  {
 
+  var pinching = false
+    
   fileprivate let configuration: ImageCropperConfiguration
   
   fileprivate var parentRect: CGRect?
   
-  fileprivate var initialSize: CGSize?
+  fileprivate var initialPinchSize: CGSize?
   
   fileprivate var figureFrame: CGRect?
   fileprivate var panLastLocation: CGPoint?
@@ -43,7 +45,7 @@ extension ImageCropperModelImplementation: ImageCropperModel {
       let figureSize = configuration.figure.maskSize(with: newValue.size, ratio: configuration.customRatio)
       figureFrame = CGRect(x: (newValue.width - figureSize.width) / 2, y: (newValue.height - figureSize.height) / 2, width: figureSize.width, height: figureSize.height)
       cornerRadius =  min(figureSize.width, figureSize.height) / 2 * configuration.cornerRadius
-      
+//      print("figureFrame:\(figureFrame) imageInitialFrame:\(imageInitialFrame)")
       imageFrame = imageInitialFrame
     }
   }
@@ -147,17 +149,23 @@ extension ImageCropperModelImplementation: ImageCropperModel {
     return imageFrame
   }
   
-  func setStartedPinch() {
-    initialSize = CGSize(width: imageFrame.width, height: imageFrame.height)
+  func setIsPinching(_ pinching: Bool) {
+    self.pinching = pinching
+    
+    if pinching {
+        initialPinchSize = CGSize(width: imageFrame.width, height: imageFrame.height)
+    } else {
+        initialPinchSize = nil
+    }
   }
   
   func scalingFrame(for scale: CGFloat) -> CGRect {
     let borders = figureFrame ?? .zero
     let pinchStartSize: CGSize
-    if initialSize == nil {
+    if initialPinchSize == nil {
       pinchStartSize = CGSize(width: imageFrame.width, height: imageFrame.height)
     } else {
-      pinchStartSize = initialSize!
+      pinchStartSize = initialPinchSize!
     }
     var newSize = CGSize(width: pinchStartSize.width * scale, height: pinchStartSize.height * scale)
     

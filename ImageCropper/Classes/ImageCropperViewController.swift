@@ -51,7 +51,9 @@ public class ImageCropperViewController: UIViewController {
   
   override public func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
+    
     presenter?.viewDidLayoutSubviews(in: view.bounds)
+//    print("viewDidLayoutSubviews view.bounds:\(view.bounds)")
   }
 }
 
@@ -94,6 +96,7 @@ extension ImageCropperViewController {
       guard sender.numberOfTouches >= 2 else { return }
       presenter?.didScale(with: sender.scale)
     case .ended, .cancelled:
+      presenter?.didPinchEnded()
       presenter?.userInteraction(false)
     default:
       return
