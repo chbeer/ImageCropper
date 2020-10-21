@@ -37,7 +37,7 @@ This solution presents itself a module developed on the basis of MVP + Clean Arc
   # s.social_media_url = 'https://twitter.com/MKopilovskii'
   s.ios.deployment_target = '10.0'
 
-  s.swift_version  = '3.0'
+  s.swift_version  = '5.0'
   s.source_files = 'ImageCropper/Classes/**/*.{xib,swift}'
   
   # s.resource_bundles = {
