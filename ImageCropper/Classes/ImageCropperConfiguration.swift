@@ -11,7 +11,7 @@ public typealias ImageCropperDismiss = () -> Void
 
 public struct ImageCropperConfiguration {
   
-  public enum ImageCropperFigureType: Int {
+  public enum ImageCropperFigureType {
     case circle 
     case square
     case rect2x1
@@ -20,7 +20,7 @@ public struct ImageCropperConfiguration {
     case rect3x4
     case rect16x9
     case rect9x16
-    case customRect
+    case customRect(CGSize)
   }
   
   var image: UIImage
@@ -37,10 +37,7 @@ public struct ImageCropperConfiguration {
    default: 0
    */
   var cornerRadius: CGFloat
-  
-  public var customRatio: CGSize?
-  
-  
+    
   public var maskFillColor: UIColor?
   public var borderColor: UIColor?
   

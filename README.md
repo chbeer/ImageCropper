@@ -48,7 +48,6 @@ This library provides the ability to cut out sections of the original image in s
 *(first number is width, second - height) 
 
 #### Сustom parameters
-`customRatio` - size for creating  figure with custom aspect ratio. Value of this property will be used only if `figure = .customRect`. Default value - `CGSize(width: 1, height: 1)`
 
 `maskFillColor` - fill color around cropped figure ("hole")
 

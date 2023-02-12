@@ -42,7 +42,7 @@ extension ImageCropperModelImplementation: ImageCropperModel {
     set {
       parentRect = newValue
       
-      let figureSize = configuration.figure.maskSize(with: newValue.size, ratio: configuration.customRatio)
+      let figureSize = configuration.figure.maskSize(with: newValue.size)
       figureFrame = CGRect(x: (newValue.width - figureSize.width) / 2, y: (newValue.height - figureSize.height) / 2, width: figureSize.width, height: figureSize.height)
       cornerRadius =  min(figureSize.width, figureSize.height) / 2 * configuration.cornerRadius
 //      print("figureFrame:\(figureFrame) imageInitialFrame:\(imageInitialFrame)")
@@ -87,7 +87,12 @@ extension ImageCropperModelImplementation: ImageCropperModel {
   var grid: [CGPath] {
     guard configuration.showGrid else { return [CGPath]() }
     guard let frame = figureFrame else { return [CGPath]() }
-    let step = configuration.figure == .customRect ? 0 : frame.width / CGFloat(configuration.figure.gridUnitDevider())
+    let step: CGFloat
+    if case .customRect(_) = configuration.figure {
+      step = 0
+    } else {
+      step = frame.width / CGFloat(configuration.figure.gridUnitDevider())
+    }
     let parentFrame = self.parentFrame
     
     var lines = [CGPath]()
@@ -261,7 +266,7 @@ extension CGRect {
 }
 
 extension ImageCropperConfiguration.ImageCropperFigureType {
-  fileprivate func maskSize(with parentSize:CGSize, ratio: CGSize?) -> CGSize {
+  fileprivate func maskSize(with parentSize:CGSize) -> CGSize {
     let parentVertical = parentSize.width < parentSize.height
     var width: CGFloat, height: CGFloat
     switch self {
@@ -286,8 +291,7 @@ extension ImageCropperConfiguration.ImageCropperFigureType {
     case .rect9x16:
       height = parentSize.height * 0.7
       width = height * 9 / 16
-    case .customRect:
-      let customRatio = ratio ?? CGSize(width: 1, height: 1) //else { return ImageCropperConfiguration.ImageCropperFigureType.square.maskSize(with:parentSize) }
+    case .customRect(let customRatio):
       if customRatio.width > customRatio.height {
         width = parentVertical ? parentSize.width * 0.8 : parentSize.width * 0.6
         height = width * customRatio.height / customRatio.width
@@ -297,7 +301,7 @@ extension ImageCropperConfiguration.ImageCropperFigureType {
         width = height * customRatio.width / customRatio.height
       }
       else {
-        return ImageCropperConfiguration.ImageCropperFigureType.square.maskSize(with:parentSize, ratio: customRatio)
+        return ImageCropperConfiguration.ImageCropperFigureType.square.maskSize(with:parentSize)
       }
 //      fatalError()
     }
