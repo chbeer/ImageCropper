@@ -12,7 +12,7 @@ import UIKit
 public class ImageCropperViewController: UIViewController {
   //MARK: Static initializer
   static public func initialize(with configuration:ImageCropperConfiguration, completionHandler: @escaping ImageCropperCompletion) -> ImageCropperViewController {
-    let cropper = ImageCropperViewController(nibName: "ImageCropper", bundle: Bundle(for: self.classForCoder()))
+    let cropper = ImageCropperViewController(nibName: "ImageCropper", bundle: Bundle.module)
     ImageCropperConfiguratorImplementation.configure(for: cropper, with: configuration, completionHandler: completionHandler)
   
     return cropper
@@ -20,7 +20,7 @@ public class ImageCropperViewController: UIViewController {
   
   static public func initialize(with configuration:ImageCropperConfiguration, completionHandler: @escaping ImageCropperCompletion, dismiss: @escaping ImageCropperDismiss) -> ImageCropperViewController {
     
-    let cropper = ImageCropperViewController(nibName: "ImageCropper", bundle: Bundle(for: self.classForCoder()))
+    let cropper = ImageCropperViewController(nibName: "ImageCropper", bundle: Bundle.module)
     ImageCropperConfiguratorImplementation.configure(for: cropper, with: configuration, completionHandler: completionHandler, dismiss: dismiss)
     
     return cropper
